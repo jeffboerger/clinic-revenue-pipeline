@@ -47,7 +47,7 @@ st.write(f'Data loaded: {len(df)} rows')
 
 
 # Graph Section
-
+# Annual Revenue Chart
 st.subheader('Annual Revenue')
 
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -64,7 +64,7 @@ plt.tight_layout()
 st.pyplot(fig)
 
 
-
+# REV by Stream Chart
 st.subheader('Revenue by Stream')
 
 fig2, ax2 = plt.subplots(figsize=(10, 5))
@@ -99,6 +99,24 @@ ax3.axhline(y=dom.mean(), color='red', linestyle='--', label='Monthly Average')
 ax3.legend()
 plt.tight_layout()
 st.pyplot(fig3)
+
+# YOY Chart
+st.subheader('Year over Year Growth')
+
+fig4, ax4 = plt.subplots(figsize=(10, 5))
+
+yearly_rev = df.groupby('year')['total_revenue'].sum()
+yearly_rev.index = yearly_rev.index.astype(int)
+yoy = yearly_rev.pct_change() * 100
+
+colors = ['steelblue' if x >= 0 else 'coral' for x in yoy]
+yoy.plot(kind='bar', ax=ax4, color=colors)
+
+ax4.axhline(y=0, color='black', linestyle='-', linewidth=0.8)
+ax4.set_xlabel('Year')
+ax4.set_ylabel('Growth (%)')
+plt.tight_layout()
+st.pyplot(fig4)
 
 
 st.subheader('Raw Data')
