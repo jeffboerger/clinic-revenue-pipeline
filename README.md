@@ -3,6 +3,9 @@
 A Full ETL data Engineering Pipeline built on 7 years of real reveneue data from a chiropractic clinic near Austin Texas. 
 Includes data cleaning, transformation, SQLite database loading, and an interactive Streamlit dashboard.
 
+## Live Demo
+[View the dashboard here](https://clinic-revenue-pipeline-odefttrp9eekfx34aqrveb.streamlit.app/)
+
 
 ## Tech Stack
 
