@@ -26,6 +26,7 @@ def standardize_columns(all_sheets):
     }
     for year, sheet in all_sheets.items():
         all_sheets[year] = sheet.rename(columns=standard_columns)
+        all_sheets[year]['year'] = year
     
     return all_sheets
 
