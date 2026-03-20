@@ -1,5 +1,5 @@
 pandas
 matplotlib
 openpyxl
-altair==4.2.2
-streamlit==1.22.0
+altair
+streamlit
