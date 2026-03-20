@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sqlite3
 
 def extract(filepath):
     """Read all sheets from Excel file."""
@@ -73,8 +74,17 @@ def load(df, output_path):
     df.to_csv(output_path, index=False)
     print(f"Data saved to {output_path}")
 
+def load_to_db(df, db_path):
+    """Load clean data into a SQLite db"""
+    conn = sqlite3.connect(db_path)
+    df.to_sql('clinic_revenue', conn, if_exists='replace', index=False)
+    conn.close()
+    print(f"Data loadfed to database at {db_path}")
+
+
 
 if __name__ == '__main__':
     raw = extract('data/BTX_17-23_Yearly_Totals.xlsx')
     clean = transform(raw)
     load(clean, 'data/clinic_revenue_clean.csv')
+    load_to_db(clean, 'data/clinic_revenue.db')
