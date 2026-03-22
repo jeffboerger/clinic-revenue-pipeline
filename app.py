@@ -45,6 +45,26 @@ st.caption('*Avg Daily Revenue excludes days with no revenue (clinic closed, hol
 st.title('Body Traxx Clinic Revenue Dashboard')
 st.write(f'Data loaded: {len(df)} rows')
 
+# Key Insights Section
+
+st.subheader('Key Insights')
+
+st.info("""
+📈 **Subscription model drives everything** — BTX chiropractic subscriptions grew from 
+65% of revenue in 2017 to over 97% by 2023, reflecting a deliberate pivot away from 
+weight loss and supplements.
+
+🦠 **Coronavirus resilience** — Only a 6% revenue drop in 2020 despite clinic closures, 
+demonstrating the stickiness of the subscription model.
+
+📅 **Billing cycles are visible in the data** — Revenue spikes consistently on the 5th, 
+15th, and 20th of each month, confirming recurring subscription payment patterns.
+
+🔍 **Outlier identified** — 16 large checks concentrated between 2020-2023 
+(largest was 9,645 dollars on June 15, 2022) do not follow subscription patterns 
+and may represent bulk or investor payments.
+""")
+
 
 # Graph Section
 # Annual Revenue Chart
@@ -96,7 +116,16 @@ dom.plot(kind='bar', ax=ax3, color='steelblue')
 ax3.set_xlabel('Day of Month')
 ax3.set_ylabel('Average Revenue ($)')
 ax3.axhline(y=dom.mean(), color='red', linestyle='--', label='Monthly Average')
-ax3.legend()
+ax3.legend(['Monthly Average'])
+
+ax3.set_title('Subscription Billing Cycles Visible in Daily Revenue Patterns', 
+              fontsize=11, pad=10)
+ax3.annotate('Billing cycle\nspike', 
+             xy=(14, dom.iloc[14]), 
+             xytext=(17, dom.iloc[14] + 50),
+             arrowprops=dict(arrowstyle='->', color='white'),
+             color='white', fontsize=9)
+
 plt.tight_layout()
 st.pyplot(fig3)
 
@@ -109,15 +138,28 @@ yearly_rev = df.groupby('year')['total_revenue'].sum()
 yearly_rev.index = yearly_rev.index.astype(int)
 yoy = yearly_rev.pct_change() * 100
 
+# Drop 2017 since it has no prior year to compare
+yoy = yoy.dropna()
+
 colors = ['steelblue' if x >= 0 else 'coral' for x in yoy]
-yoy.plot(kind='bar', ax=ax4, color=colors)
+bars = ax4.bar(yoy.index.astype(str), yoy.values, color=colors)
+
+# Add value labels on top of each bar
+for bar, val in zip(bars, yoy.values):
+    ax4.text(bar.get_x() + bar.get_width()/2, 
+             bar.get_height() + (1 if val >= 0 else -3),
+             f'{val:.1f}%', ha='center', fontsize=9)
 
 ax4.axhline(y=0, color='black', linestyle='-', linewidth=0.8)
 ax4.set_xlabel('Year')
 ax4.set_ylabel('Growth (%)')
+ax4.legend(handles=[
+    plt.Rectangle((0,0),1,1, color='steelblue', label='Growth'),
+    plt.Rectangle((0,0),1,1, color='coral', label='Decline')
+])
 plt.tight_layout()
 st.pyplot(fig4)
 
-
-st.subheader('Raw Data')
-st.dataframe(df)
+# Raw Data Section
+# st.subheader('Raw Data')
+# st.dataframe(df)
