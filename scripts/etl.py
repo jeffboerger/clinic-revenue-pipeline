@@ -80,7 +80,7 @@ def load_to_db(df, db_path):
     conn = sqlite3.connect(db_path)
     df.to_sql('clinic_revenue', conn, if_exists='replace', index=False)
     conn.close()
-    print(f"Data loadfed to database at {db_path}")
+    print(f"Data loaded to database at {db_path}")
 
 
 
