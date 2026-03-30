@@ -68,6 +68,57 @@ def transform(all_sheets):
     df = add_columns(df)
     return df
 
+# Adding 2024 and 2025 data
+def extract_new(filepath):
+    """Extract Monthly Sheets from 2024-2025 format files."""
+    return pd.read_excel(filepath, sheet_name=None)
+
+def transform_new(all_sheets, year):
+    """
+    Transform 2024-2025 clinic data into unified schema.
+    New Format has monthly sheets, different column structure.
+    BTX/Supp/WL breakdown not available - all revenue mapped to BTX based on 2023 trend showing >97% is BTX Revenue
+    """
+
+    dfs = []
+
+    for month, sheet in all_sheets.items():
+        # Read only the relevant columns , skip blanks 
+        sheet = sheet.iloc[:, [0, 1, 2, 3, 5, 7, 8]]
+
+        # rename to standard column names
+        sheet.columns = [
+            'full_date', 'cash_btx', 'check_btx', 'cc_btx', 'total_revenue', 'square_fees', 'total_deposit'
+        ]
+
+        # Drop rows where full_date is null or noat a real date
+        sheet = sheet.dropna(subset=['full_date'])
+        sheet = sheet[pd.to_datetime(sheet['full_date'], errors='coerce').notna()]
+
+        #add year column
+        sheet['year'] = year
+
+        dfs.append(sheet)
+
+    df = pd.concat(dfs, ignore_index=True)
+    
+    # Add missing revenue stream columns as zeros
+    df['cc_supp'] = 0
+    df['cc_wl'] = 0
+    df['cash_supp'] = 0
+    df['cash_wl'] = 0
+    df['check_supp'] = 0
+    df['check_wl'] = 0
+
+    # Standardize date format
+    df['full_date'] = pd.to_datetime(df['full_date'])
+
+    # Fill any remaining NaNs with 0
+    df = df.fillna(0)
+
+    return df
+
+
 
 def load(df, output_path):
     """Save the clean data to CSV."""
@@ -85,7 +136,28 @@ def load_to_db(df, db_path):
 
 
 if __name__ == '__main__':
-    raw = extract('data/BTX_17-23_Yearly_Totals.xlsx')
-    clean = transform(raw)
-    load(clean, 'data/clinic_revenue_clean.csv')
-    load_to_db(clean, 'data/clinic_revenue.db')
+    print("Extracting data...")
+
+    # Original format 2017-2023
+    raw_original = extract('data/BTX_17-23_Yearly_Totals.xlsx')
+    df_original = transform(raw_original)
+
+    # New format 2024
+    raw_2024 = extract_new('data/Totals_2024.xlsx')
+    df_2024 = transform_new(raw_2024, year=2024)
+
+    # New format 2025
+    raw_2025 = extract_new('data/Totals_2025.xlsx')
+    df_2025 = transform_new(raw_2025, year=2025)
+
+    # Combine all years
+    print("Combining all years...")
+    df_all = pd.concat([df_original, df_2024, df_2025], ignore_index=True)
+    df_all = df_all.sort_values('full_date').reset_index(drop=True)
+
+    print(f"Total rows: {len(df_all)}")
+    print(f"Years covered: {sorted(df_all['year'].unique())}")
+
+    # Load
+    load(df_all, 'data/clinic_revenue_clean.csv')
+    load_to_db(df_all, 'data/clinic_revenue.db')
