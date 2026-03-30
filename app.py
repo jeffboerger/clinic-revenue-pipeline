@@ -35,12 +35,12 @@ best_year = df.groupby('year')['total_revenue'].sum().idxmax()
 avg_daily = df[df['total_revenue'] > 0]['total_revenue'].mean()
 best_day = df['total_revenue'].max()
 
-col1.metric("Total Revenue (7yr)", f'${total_revenue:,.0f}')
+col1.metric("Total Revenue (2017-2025)", f'${total_revenue:,.0f}')
 col2.metric('Best Year', best_year)
 col3.metric('Avg Daily Revenue', f'${avg_daily:,.0f}')
 col4.metric('Best Single Day', f'${best_day:,.0f}')
 
-st.caption('*Avg Daily Revenue excludes days with no revenue (clinic closed, holidays, pre-opening period)')
+st.caption('*Avg Daily Revenue excludes days with no revenue (clinic closed, holidays, pre-opening period) | Data spans 2017-2025')
 
 st.title('Body Traxx Clinic Revenue Dashboard')
 st.write(f'Data loaded: {len(df)} rows')
@@ -51,18 +51,21 @@ st.subheader('Key Insights')
 
 st.info("""
 📈 **Subscription model drives everything** — BTX chiropractic subscriptions grew from 
-65% of revenue in 2017 to over 97% by 2023, reflecting a deliberate pivot away from 
-weight loss and supplements.
+65% of revenue in 2017 to over 97% by 2023, and remain the sole revenue driver 
+through 2024-2025.
 
-🦠 **Coronavirus resilience** — Only a 6% revenue drop in 2020 despite clinic closures, 
+🦠 **COVID resilience** — Only a 6% revenue drop in 2020 despite clinic closures, 
 demonstrating the stickiness of the subscription model.
 
 📅 **Billing cycles are visible in the data** — Revenue spikes consistently on the 5th, 
 15th, and 20th of each month, confirming recurring subscription payment patterns.
 
-🔍 **Outlier identified** — 16 large checks concentrated between 2020-2023 
-(largest was 9,645 dollars on June 15, 2022) do not follow subscription patterns 
-and may represent bulk or investor payments.
+📊 **Post-peak stabilization** — Revenue peaked at $187,025 in 2022 and has stabilized 
+around $165K-$168K through 2024-2025, suggesting a mature subscription base.
+
+🔍 **Outlier identified** — 16 checks over $1,000 concentrated between 2020-2023 
+(largest: $9,645 on June 15, 2022) do not follow subscription patterns and may 
+represent bulk or investor payments.
 """)
 
 
