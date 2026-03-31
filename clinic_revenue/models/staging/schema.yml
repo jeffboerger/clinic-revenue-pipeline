@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: stg_clinic_revenue
+    description: "Cleaned and standardized clinic revenue data spanning 2017-2025"
+    columns:
+      - name: date
+        description: "Calendar date of the revenue record"
+        tests:
+          - not_null
+          - unique
+      - name: year
+        description: "Year extracted from date"
+        tests:
+          - not_null
+      - name: total_revenue
+        description: "Total daily revenue across all payment types"
+        tests:
+          - not_null

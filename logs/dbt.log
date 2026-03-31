@@ -1,0 +1,31 @@
+[0m08:23:53.879833 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e2ece50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10f8806a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10f8809d0>]}
+
+
+============================== 08:23:53.885446 | 9969ee85-2851-4d7a-9d51-eb99890f2687 ==============================
+[0m08:23:53.885446 [info ] [MainThread]: Running with dbt=1.10.20
+[0m08:23:53.886130 [debug] [MainThread]: running dbt with arguments {'empty': 'None', 'partial_parse': 'True', 'log_path': 'logs', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True', 'target_path': 'None', 'introspect': 'True', 'version_check': 'True', 'use_experimental_parser': 'False', 'quiet': 'False', 'no_print': 'None', 'fail_fast': 'False', 'printer_width': '80', 'log_cache_events': 'False', 'profiles_dir': '/Users/jeffboerger/.dbt', 'debug': 'False', 'write_json': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'warn_error': 'None', 'cache_selected_only': 'False', 'log_format': 'default', 'use_colors': 'True', 'indirect_selection': 'eager', 'invocation_command': 'dbt init dbt'}
+[0m08:23:53.896323 [info ] [MainThread]: Creating dbt configuration folder at /Users/jeffboerger/.dbt
+[0m08:24:30.801919 [debug] [MainThread]: Starter project path: /Users/jeffboerger/Dev/clinic-revenue-pipeline/venv/lib/python3.9/site-packages/dbt/include/starter_project
+[0m08:24:30.813764 [info ] [MainThread]: 
+Your new dbt project "clinic_revenue" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m08:24:30.814663 [info ] [MainThread]: Setting up your profile.
+[0m08:48:51.872250 [info ] [MainThread]: Profile clinic_revenue written to /Users/jeffboerger/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m08:48:51.912341 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 1498.0609, "process_in_blocks": "0", "process_kernel_time": 0.477518, "process_mem_max_rss": "123109376", "process_out_blocks": "0", "process_user_time": 3.296087}
+[0m08:48:51.918575 [debug] [MainThread]: Command `dbt init` succeeded at 08:48:51.918177 after 1498.07 seconds
+[0m08:48:51.921969 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e2ece50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10f7d20d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10f880280>]}
+[0m08:48:51.924304 [debug] [MainThread]: Flushing usage events
+[0m08:48:52.279911 [debug] [MainThread]: An error was encountered while trying to flush usage events

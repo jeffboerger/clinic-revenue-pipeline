@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import sqlite3
+from sqlalchemy import create_engine
 
 def extract(filepath):
     """Read all sheets from Excel file."""
@@ -133,6 +134,13 @@ def load_to_db(df, db_path):
     conn.close()
     print(f"Data loaded to database at {db_path}")
 
+def load_to_postgres(df, user, database, schema='public', host='localhost', port=5432):
+    """Load clean data into a PostgreSQL database."""
+    engine = create_engine(f'postgresql://{user}@{host}:{port}/{database}')
+    df.to_sql('clinic_revenue', engine, schema=schema, if_exists='replace', index=False)
+    engine.dispose()
+    print(f"Data loaded to PostgreSQL database: {database}")
+
 
 
 if __name__ == '__main__':
@@ -154,6 +162,7 @@ if __name__ == '__main__':
     print("Combining all years...")
     df_all = pd.concat([df_original, df_2024, df_2025], ignore_index=True)
     df_all = df_all.sort_values('full_date').reset_index(drop=True)
+    df_all['year'] = df_all['year'].astype('int')
 
     print(f"Total rows: {len(df_all)}")
     print(f"Years covered: {sorted(df_all['year'].unique())}")
@@ -161,3 +170,6 @@ if __name__ == '__main__':
     # Load
     load(df_all, 'data/clinic_revenue_clean.csv')
     load_to_db(df_all, 'data/clinic_revenue.db')
+
+    # Load to PostgreSQL
+    load_to_postgres(df_all, user='jeffboerger', database='clinic_revenue')
