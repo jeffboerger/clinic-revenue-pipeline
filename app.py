@@ -1,15 +1,34 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
+# import sqlite3
 import matplotlib.pyplot as plt
+from sqlalchemy import create_engine
 
 def load_data():
-    """Load Data from SQLite db"""
-    conn = sqlite3.connect('data/clinic_revenue.db')
-    df = pd.read_sql('SELECT * FROM clinic_revenue', conn)
-    conn.close()
+    """Load data — tries Supabase first, falls back to SQLite."""
+    # Try Supabase (production)
+    try:
+        s = st.secrets["supabase"]
+        url = f"postgresql://{s['user']}:{s['password']}@{s['host']}:{s['port']}/{s['database']}"
+        engine = create_engine(url)
+        df = pd.read_sql('SELECT * FROM stg_clinic_revenue', engine)
+        engine.dispose()
+        print("Connected to Supabase")
+        return df
+    except Exception as e:
+        print(f"Supabase connection failed: {e}")
     
-    return df
+    # Fall back to SQLite (local)
+    try:
+        import sqlite3
+        conn = sqlite3.connect('data/clinic_revenue.db')
+        df = pd.read_sql('SELECT * FROM clinic_revenue', conn)
+        conn.close()
+        print("Connected to SQLite fallback")
+        return df
+    except Exception as e:
+        print(f"SQLite fallback failed: {e}")
+        raise Exception("All database connections failed")
 
 df = load_data()
 # st.write(df.columns.tolist())

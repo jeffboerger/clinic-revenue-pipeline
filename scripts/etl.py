@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import sqlite3
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 def extract(filepath):
     """Read all sheets from Excel file."""
@@ -137,9 +137,34 @@ def load_to_db(df, db_path):
 def load_to_postgres(df, user, database, schema='public', host='localhost', port=5432):
     """Load clean data into a PostgreSQL database."""
     engine = create_engine(f'postgresql://{user}@{host}:{port}/{database}')
+    
+    # Drop table with CASCADE to remove dependent dbt views
+    with engine.connect() as conn:
+        conn.execute(text('DROP TABLE IF EXISTS public.clinic_revenue CASCADE'))
+        conn.commit()
+    
     df.to_sql('clinic_revenue', engine, schema=schema, if_exists='replace', index=False)
     engine.dispose()
     print(f"Data loaded to PostgreSQL database: {database}")
+
+def load_to_supabase(df):
+    """Load clean data into Supabase PostgreSQL."""
+    import streamlit as st
+    from sqlalchemy import create_engine
+    try:
+        s = st.secrets["supabase"]
+        url = f"postgresql://{s['user']}:{s['password']}@{s['host']}:{s['port']}/{s['database']}"
+    except Exception:
+        # Fall back to reading from secrets.toml directly
+        import toml
+        secrets = toml.load('.streamlit/secrets.toml')
+        s = secrets['supabase']
+        url = f"postgresql://{s['user']}:{s['password']}@{s['host']}:{s['port']}/{s['database']}"
+    
+    engine = create_engine(url)
+    df.to_sql('clinic_revenue', engine, if_exists='replace', index=False)
+    engine.dispose()
+    print("Data loaded to Supabase")
 
 
 
@@ -170,6 +195,8 @@ if __name__ == '__main__':
     # Load
     load(df_all, 'data/clinic_revenue_clean.csv')
     load_to_db(df_all, 'data/clinic_revenue.db')
+    load_to_supabase(df_all)
 
     # Load to PostgreSQL
     load_to_postgres(df_all, user='jeffboerger', database='clinic_revenue')
+    print("Run 'cd clinic_revenue && dbt run' to rebuild dbt models")

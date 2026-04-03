@@ -2,7 +2,6 @@ version: 2
 
 sources:
   - name: clinic
-    database: clinic_revenue
     schema: public
     tables:
      - name: clinic_revenue
