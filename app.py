@@ -79,11 +79,11 @@ demonstrating the stickiness of the subscription model.
 📅 **Billing cycles are visible in the data** — Revenue spikes consistently on the 5th, 
 15th, and 20th of each month, confirming recurring subscription payment patterns.
 
-📊 **Post-peak stabilization** — Revenue peaked at $187,025 in 2022 and has stabilized 
-around $165K-$168K through 2024-2025, suggesting a mature subscription base.
+📊 **Post-peak stabilization** — Revenue peaked at \$187,025 in 2022 and has stabilized 
+around \$165K-\$168K through 2024-2025, suggesting a mature subscription base.
 
-🔍 **Outlier identified** — 16 checks over $1,000 concentrated between 2020-2023 
-(largest: $9,645 on June 15, 2022) do not follow subscription patterns and may 
+🔍 **Outlier identified** — 16 checks over \$1,000 concentrated between 2020-2023 
+(largest: \$9,645 on June 15, 2022) do not follow subscription patterns and may 
 represent bulk or investor payments.
 """)
 
